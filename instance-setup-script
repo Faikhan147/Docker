@@ -1,0 +1,52 @@
+#!/bin/bash
+sudo su
+apt update -y
+apt install -y ca-certificates curl gnupg lsb-release unzip wget
+mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+apt update -y
+apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+systemctl start docker
+systemctl enable docker
+
+
+# Create .env file
+cat <<EOF > /root/.env
+MYSQL_ROOT_PASSWORD=faisalkhan34@
+MYSQL_USER=farzan
+MYSQL_PASSWORD=farzankhan34@
+MYSQL_DATABASE=faisal_farzan
+EOF
+
+#Create Docker Compose
+cat <<EOF > /root/compose.yaml
+version: "3.8"
+services:
+  website:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - 80:80
+  app:
+    image: tomcat:10
+    container_name: tomcat
+    ports:
+      - 8080:8080
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    ports:
+      - 3306:3306
+    env_file:
+      - /root/.env
+    volumes:
+      - mysql-db:/var/lib/mysql
+
+volumes:
+  mysql-db:
+EOF
+
+#Run Docker Compose
+docker compose -f /root/compose.yaml up -d
