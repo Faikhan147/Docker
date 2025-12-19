@@ -1,0 +1,38 @@
+1. Dockerfile for html css website
+
+FROM nginx:alpine
+RUN rm -rf /usr/share/nginx/html/*
+COPY . /usr/share/nginx/html/
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off"]
+
+
+2. Docker file for React.js app 
+
+# STEP1 build the app
+
+FROM node:alpine As builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --leegacy-peer-deps
+COPY . .
+RUN npm run build
+
+# STEP 2 creat the image
+
+FROM nginx:alpine
+RUN rm -rf /usr/share/nginx/html/*
+COPY --from=builder /app/build /usr/share/nginx/html/
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off"]
+
+
+3. Dockerfile for Node.js
+
+FROM node:alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --leegacy-peer-deps
+COPY . .
+EXPOSE 3000
+CMD ["node", "server.js"]
