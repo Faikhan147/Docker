@@ -1,0 +1,5 @@
+docker exec -it mysql mysql -u root -p
+SHOW DATABASES;
+
+docker exec -it mysql mysql -u farzan -p
+SHOW DATABASES;
