@@ -24,16 +24,6 @@ EOF
 cat <<EOF > /root/compose.yaml
 version: "3.8"
 services:
-  website:
-    image: nginx:latest
-    container_name: nginx
-    ports:
-      - 80:80
-  app:
-    image: tomcat:10
-    container_name: tomcat
-    ports:
-      - 8080:8080
   mysql:
     image: mysql:5.7
     container_name: mysql
